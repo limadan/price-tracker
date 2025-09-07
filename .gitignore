@@ -1,6 +1,7 @@
 back-end/node_modules
-front-end/node_modules
 back-end/coverage
+back-end/.env
+back-end/database.sqlite
+
+front-end/node_modules
 front-end/coverage
-.env
-database.sqlite

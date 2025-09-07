@@ -4,12 +4,11 @@
   "description": "An automated bot that monitors product prices on your favorite e-commerce sites and sends you a notification when a price drops below your target.",
   "main": "src/app.ts",
   "scripts": {
-    "start": "ts-node src/app.ts",
-    "test:database": "ts-node src/database/testing-app.ts",
-    "seed:mock": "ts-node src/database/seeders/mockData.ts",
-    "scheduler": "ts-node src/scrapers/Scheduler.ts",
+    "database:test-api": "ts-node src/database/testing-app.ts",
+    "database:seed-mock-data": "ts-node src/database/seeders/mockData.ts",
+    "scheduler:scraper": "ts-node src/scrapers/Scheduler.ts",
+    "scheduler:notifier": "ts-node src/notifiers/Scheduler.ts",
     "test:scrape": "ts-node src/test-scrape.ts",
-    "notifier": "ts-node src/notifiers/Scheduler.ts",
     "test": "jest"
   },
   "keywords": [
