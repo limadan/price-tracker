@@ -1,4 +1,5 @@
 import { ProductUrl, PriceHistory, Store } from '../database/models';
+import { Logger } from '../utils/Logger';
 import { StrategyInterface } from './strategies/StrategyInterface';
 
 export class BaseScrapper {
@@ -13,7 +14,10 @@ export class BaseScrapper {
     try {
       this.stores = await Store.findAll();
     } catch (error) {
-      console.error('Error fetching stores:', error);
+      Logger.error(
+        'Error fetching stores:',
+        error instanceof Error ? error.stack : undefined
+      );
       this.stores = [];
     }
   }
@@ -26,10 +30,6 @@ export class BaseScrapper {
     productUrlId: number,
     price: number
   ): Promise<void> {
-    console.log(
-      `Inserting price history for url ${productUrlId} with price ${price}`
-    );
-
     const currentDate = new Date();
     currentDate.setSeconds(0, 0);
 
@@ -50,7 +50,7 @@ export class BaseScrapper {
       return new Promise<void>((resolve, reject) => {
         const store = this.stores.find((s) => s.id === productUrl.storeId);
         if (!store) {
-          console.error(`Store not found for ID ${productUrl.storeId}`);
+          Logger.warning(`Store not found for ID ${productUrl.storeId}`);
           resolve();
           return;
         }
@@ -58,7 +58,7 @@ export class BaseScrapper {
         const strategy: StrategyInterface =
           this.scrappingStrategies[store.name.toLowerCase()];
         if (!strategy) {
-          console.error(`No strategy found for store ${store.name}`);
+          Logger.warning(`No scraper found for store ${store.name}`);
           resolve();
           return;
         }
@@ -68,7 +68,10 @@ export class BaseScrapper {
           .then((price) => this.insertPriceHistory(productUrl.id, price))
           .then(() => resolve())
           .catch((error) => {
-            console.error(`Error scraping URL ${productUrl.url}:`, error);
+            Logger.error(
+              `Error scraping URL from store ${productUrl.storeId} for product ${productUrl.productId}: ${error.message}`,
+              error instanceof Error ? error.stack : undefined
+            );
             resolve();
           });
       });
@@ -79,7 +82,10 @@ export class BaseScrapper {
         console.log('Completed scraping all URLs.');
       })
       .catch((error) => {
-        console.error('Error during scraping process:', error);
+        Logger.error(
+          `Error during scraping process: ${error}`,
+          error instanceof Error ? error.stack : undefined
+        );
       });
   }
 }

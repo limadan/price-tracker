@@ -1,7 +1,8 @@
 import { Product, PriceHistory, ProductUrl, Store } from '../database/models';
 import { NotifierInterface } from './strategies/NotifierInterface';
 import { PriceAlertData } from './PriceAlertDataInterface';
-import { Op, Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
+import { Logger } from '../utils/Logger';
 
 export class BaseNotifier {
   notifiers: NotifierInterface[];
@@ -84,22 +85,23 @@ export class BaseNotifier {
           },
         }
       );
+
+      Logger.info(
+        `Reseted notification for ${
+          idsToReset.length
+        } alert(s). IDs: ${idsToReset.join(', ')} `
+      );
     }
   }
 
   async processNotifications() {
-    console.log('Iniciando processo de notificação...');
-
     await this.resetNotifications();
 
     const alertsToSend = await this.findAlertsToNotify();
 
     if (alertsToSend.length === 0) {
-      console.log('Nenhum novo alerta de preço para notificar.');
       return;
     }
-
-    console.log(`Encontrado(s) ${alertsToSend.length} alerta(s) para enviar.`);
 
     for (const alert of alertsToSend) {
       const alertData: PriceAlertData = {
@@ -117,21 +119,19 @@ export class BaseNotifier {
           await notifier.notify(alertData);
           atLeastOneNotifierSucceeded = true;
         } catch (error) {
-          console.error(
-            `Falha ao enviar notificação para ${alertData.productName} via ${notifier.constructor.name}:`,
-            error
+          Logger.error(
+            `Error sending notification via ${notifier.constructor.name}: ${error}`,
+            error instanceof Error ? error.stack : undefined
           );
         }
       }
 
       if (atLeastOneNotifierSucceeded) {
         await alert.update({ notifiedAt: new Date() });
-        console.log(
-          `Alerta para "${alertData.productName}" marcado como notificado.`
-        );
+        Logger.info(`Notification sent for "${alertData.productName}"`);
       } else {
-        console.log(
-          `TODAS as notificações para "${alertData.productName}" falharam. Status não foi atualizado.`
+        Logger.error(
+          `All notification attempts failed for "${alertData.productName}". Status not updated.`
         );
       }
     }

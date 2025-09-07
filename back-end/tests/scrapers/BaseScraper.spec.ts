@@ -2,6 +2,7 @@ import { BaseScrapper } from '../../src/scrapers/BaseScraper';
 
 import { ProductUrl, PriceHistory, Store } from '../../src/database/models';
 import { StrategyInterface } from '../../src/scrapers/strategies/StrategyInterface';
+import { Logger } from '../../src/utils/Logger';
 
 jest.mock('../../src/database/models', () => ({
   ProductUrl: {
@@ -12,6 +13,13 @@ jest.mock('../../src/database/models', () => ({
   },
   Store: {
     findAll: jest.fn(),
+  },
+}));
+
+jest.mock('../../src/utils/Logger', () => ({
+  Logger: {
+    error: jest.fn(),
+    warning: jest.fn(),
   },
 }));
 
@@ -52,6 +60,10 @@ describe('BaseScrapper', () => {
       await scrapper.initializeStores();
 
       expect(scrapper.stores).toEqual([]);
+      expect(Logger.error).toHaveBeenCalledWith(
+        'Error fetching stores:',
+        expect.any(String)
+      );
     });
   });
 
@@ -143,6 +155,7 @@ describe('BaseScrapper', () => {
       await scrapper.scrapeAllUrls();
 
       expect(mockAmazonStrategy.scrape).not.toHaveBeenCalled();
+      expect(Logger.warning).toHaveBeenCalledWith('Store not found for ID 99');
     });
 
     it('should log an error if the strategy for a store is not found', async () => {
@@ -163,6 +176,9 @@ describe('BaseScrapper', () => {
       await scrapper.scrapeAllUrls();
 
       expect(mockAmazonStrategy.scrape).not.toHaveBeenCalled();
+      expect(Logger.warning).toHaveBeenCalledWith(
+        'No scraper found for store UnknownStore'
+      );
     });
 
     it("should log an error if the strategy's scrape method fails", async () => {
@@ -174,6 +190,10 @@ describe('BaseScrapper', () => {
       await scrapper.scrapeAllUrls();
 
       expect(PriceHistory.create).not.toHaveBeenCalled();
+      expect(Logger.error).toHaveBeenCalledWith(
+        expect.stringContaining('Error scraping URL from store'),
+        expect.any(String)
+      );
     });
   });
 });

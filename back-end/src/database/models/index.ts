@@ -2,8 +2,8 @@ import { Product } from './Product';
 import { Store } from './Store';
 import { ProductUrl } from './ProductUrl';
 import { PriceHistory } from './PriceHistory';
+import { ApplicationLogs } from './ApplicationLogs';
 
-// Set up associations
 ProductUrl.belongsTo(Product, {
   foreignKey: 'productId',
   as: 'product',
@@ -24,5 +24,4 @@ PriceHistory.belongsTo(ProductUrl, {
   as: 'productUrl',
 });
 
-// Export all models
-export { Product, Store, ProductUrl, PriceHistory };
+export { Product, Store, ProductUrl, PriceHistory, ApplicationLogs };

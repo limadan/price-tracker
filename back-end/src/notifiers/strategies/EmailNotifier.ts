@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { NotifierInterface } from './NotifierInterface';
 import { PriceAlertData } from '../PriceAlertDataInterface';
+import { Logger } from '../../utils/Logger';
 
 export class EmailNotifier implements NotifierInterface {
   private transporter: nodemailer.Transporter;
@@ -11,8 +12,9 @@ export class EmailNotifier implements NotifierInterface {
       !process.env.EMAIL_USER ||
       !process.env.EMAIL_PASS
     ) {
+      Logger.error('Email configuration is missing in environment variables');
       throw new Error(
-        'As variáveis de ambiente do e-mail não estão configuradas.'
+        'Email configuration is missing in environment variables'
       );
     }
 
@@ -39,11 +41,15 @@ export class EmailNotifier implements NotifierInterface {
 
     try {
       const info = await this.transporter.sendMail(mailOptions);
-      console.log(
-        `E-mail de notificação enviado com sucesso: ${info.messageId}`
+      Logger.info(
+        `Email sent: ${info.messageId} for product ${alertData.productName}`
       );
     } catch (error) {
-      console.error('Erro ao enviar e-mail de notificação:', error);
+      Logger.error(
+        `Failed to send email for product ${alertData.productName}: ${error}`,
+        error instanceof Error ? error.stack : undefined
+      );
+
       throw error;
     }
   }
