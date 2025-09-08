@@ -6,6 +6,9 @@ import { AmazonScrapingStrategy } from '../scrapers/strategies/AmazonScrapingStr
 import { EbayScrapingStrategy } from '../scrapers/strategies/EbayScrapingStrategy';
 import { EmailNotifier } from '../notifiers/strategies/EmailNotifier';
 import { Logger } from '../utils/Logger';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const scrapingStrategies = {
   amazon: new AmazonScrapingStrategy(),
@@ -18,9 +21,6 @@ const baseScraper = new BaseScraper(scrapingStrategies);
 const baseNotifier = new BaseNotifier(notifiers);
 
 function start() {
-  Logger.info('Starting scheduler...');
-
-  // Schedule scraper and notifier every 5 minutes
   cron.schedule('*/5 * * * *', async () => {
     try {
       await baseScraper.scrapeAllUrls();
@@ -34,7 +34,6 @@ function start() {
 
     try {
       await baseNotifier.processNotifications();
-      Logger.info('Notifier completed successfully.');
     } catch (error) {
       Logger.error(
         'Error running notifier:',

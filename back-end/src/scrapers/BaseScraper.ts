@@ -41,6 +41,7 @@ export class BaseScraper {
   }
 
   public async scrapeAllUrls(): Promise<void> {
+    console.log('Starting scraping process...');
     if (this.stores.length === 0) {
       await this.initializeStores();
     }

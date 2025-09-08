@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../../config/database';
+import { ProductUrl } from './ProductUrl';
 
 interface ProductAttributes {
   id?: number;
@@ -18,6 +19,7 @@ export class Product
   public targetPrice!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+  public readonly productUrls?: any[];
 }
 
 Product.init(

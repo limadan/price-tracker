@@ -113,25 +113,21 @@ export class BaseNotifier {
 
       let atLeastOneNotifierSucceeded = false;
 
+      console.log(
+        `Sending notification for "${alertData.productName}" at "${alertData.storeName}"`
+      );
       for (const notifier of this.notifiers) {
         try {
           await notifier.notify(alertData);
           atLeastOneNotifierSucceeded = true;
         } catch (error) {
-          Logger.error(
-            `Error sending notification via ${notifier.constructor.name}: ${error}`,
-            error instanceof Error ? error.stack : undefined
-          );
+          continue;
         }
       }
 
       if (atLeastOneNotifierSucceeded) {
         await alert.update({ notifiedAt: new Date() });
         Logger.info(`Notification sent for "${alertData.productName}"`);
-      } else {
-        Logger.error(
-          `All notification attempts failed for "${alertData.productName}". Status not updated.`
-        );
       }
     }
   }

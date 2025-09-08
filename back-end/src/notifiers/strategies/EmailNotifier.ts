@@ -35,7 +35,7 @@ export class EmailNotifier implements NotifierInterface {
     const mailOptions = {
       from: process.env.EMAIL_FROM,
       to: process.env.NOTIFY_EMAIL_TO,
-      subject: `Alerta de Preço: ${alertData.productName} está mais barato!`,
+      subject: `Price Alert: ${alertData.productName} is cheaper now!`,
       html: htmlBody,
     };
 

@@ -7,6 +7,11 @@ import { HourlyPriceReport } from './reports/HourlyPriceReport';
 import { DailyPriceReport } from './reports/DailyPriceReport';
 import { MonthlyPriceReport } from './reports/MonthlyPriceReport';
 
+Product.hasMany(ProductUrl, {
+  foreignKey: 'productId',
+  as: 'productUrls',
+});
+
 ProductUrl.belongsTo(Product, {
   foreignKey: 'productId',
   as: 'product',
