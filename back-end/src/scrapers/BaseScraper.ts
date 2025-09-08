@@ -2,7 +2,7 @@ import { ProductUrl, PriceHistory, Store } from '../database/models';
 import { Logger } from '../utils/Logger';
 import { StrategyInterface } from './strategies/StrategyInterface';
 
-export class BaseScrapper {
+export class BaseScraper {
   stores: Store[] = [];
   scrappingStrategies: Record<string, StrategyInterface>;
 

@@ -31,7 +31,6 @@ export class AmazonScrapingStrategy implements StrategyInterface {
         throw new Error('Invalid price format');
       }
 
-      console.log(`Scraped Amazon price: ${price} from URL: ${url}`);
       return price;
     } catch (error) {
       if (axios.isAxiosError(error)) {

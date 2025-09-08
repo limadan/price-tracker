@@ -1,8 +1,11 @@
-import { Product } from './Product';
-import { Store } from './Store';
-import { ProductUrl } from './ProductUrl';
-import { PriceHistory } from './PriceHistory';
-import { ApplicationLogs } from './ApplicationLogs';
+import { Product } from './entities/Product';
+import { Store } from './entities/Store';
+import { ProductUrl } from './entities/ProductUrl';
+import { PriceHistory } from './entities/PriceHistory';
+import { ApplicationLogs } from './logs/ApplicationLogs';
+import { HourlyPriceReport } from './reports/HourlyPriceReport';
+import { DailyPriceReport } from './reports/DailyPriceReport';
+import { MonthlyPriceReport } from './reports/MonthlyPriceReport';
 
 ProductUrl.belongsTo(Product, {
   foreignKey: 'productId',
@@ -24,4 +27,43 @@ PriceHistory.belongsTo(ProductUrl, {
   as: 'productUrl',
 });
 
-export { Product, Store, ProductUrl, PriceHistory, ApplicationLogs };
+HourlyPriceReport.belongsTo(Product, {
+  foreignKey: 'productId',
+  as: 'product',
+});
+
+HourlyPriceReport.belongsTo(Store, {
+  foreignKey: 'storeId',
+  as: 'store',
+});
+
+DailyPriceReport.belongsTo(Product, {
+  foreignKey: 'productId',
+  as: 'product',
+});
+
+DailyPriceReport.belongsTo(Store, {
+  foreignKey: 'storeId',
+  as: 'store',
+});
+
+MonthlyPriceReport.belongsTo(Product, {
+  foreignKey: 'productId',
+  as: 'product',
+});
+
+MonthlyPriceReport.belongsTo(Store, {
+  foreignKey: 'storeId',
+  as: 'store',
+});
+
+export {
+  Product,
+  Store,
+  ProductUrl,
+  PriceHistory,
+  ApplicationLogs,
+  HourlyPriceReport,
+  DailyPriceReport,
+  MonthlyPriceReport,
+};

@@ -1,4 +1,4 @@
-import { BaseScrapper } from '../../src/scrapers/BaseScraper';
+import { BaseScraper } from '../../src/scrapers/BaseScraper';
 
 import { ProductUrl, PriceHistory, Store } from '../../src/database/models';
 import { StrategyInterface } from '../../src/scrapers/strategies/StrategyInterface';
@@ -23,8 +23,8 @@ jest.mock('../../src/utils/Logger', () => ({
   },
 }));
 
-describe('BaseScrapper', () => {
-  let scrapper: BaseScrapper;
+describe('BaseScraper', () => {
+  let scrapper: BaseScraper;
   let mockScrapingStrategies: Record<string, StrategyInterface>;
   let mockAmazonStrategy: StrategyInterface;
 
@@ -39,7 +39,7 @@ describe('BaseScrapper', () => {
       amazon: mockAmazonStrategy,
     };
 
-    scrapper = new BaseScrapper(mockScrapingStrategies);
+    scrapper = new BaseScraper(mockScrapingStrategies);
   });
 
   describe('initializeStores', () => {

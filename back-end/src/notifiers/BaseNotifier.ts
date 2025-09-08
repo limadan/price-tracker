@@ -76,7 +76,6 @@ export class BaseNotifier {
     }
 
     if (idsToReset.length > 0) {
-      console.log(`Resetando notificação para ${idsToReset.length} alerta(s).`);
       await ProductUrl.update(
         { notifiedAt: null },
         {

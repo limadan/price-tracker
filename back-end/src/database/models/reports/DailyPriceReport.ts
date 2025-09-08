@@ -1,36 +1,32 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/database';
-import { Product } from './Product';
-import { Store } from './Store';
-import { PriceHistory } from './PriceHistory';
+import sequelize from '../../config/database';
+import { Product } from '../entities/Product';
+import { Store } from '../entities/Store';
 
-interface ProductUrlAttributes {
+interface DailyPriceReportAttributes {
   id?: number;
   productId: number;
   storeId: number;
-  url: string;
-  notifiedAt?: Date | null;
-  createdAt?: Date;
-  updatedAt?: Date;
+  averagePrice: number;
+  day: Date;
 }
 
-export class ProductUrl
-  extends Model<ProductUrlAttributes>
-  implements ProductUrlAttributes
+export class DailyPriceReport
+  extends Model<DailyPriceReportAttributes>
+  implements DailyPriceReportAttributes
 {
-  public id!: number;
+  public id?: number;
   public productId!: number;
   public storeId!: number;
-  public url!: string;
-  public notifiedAt!: Date | null;
+  public averagePrice!: number;
+  public day!: Date;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
   public readonly product?: Product;
   public readonly store?: Store;
-  public readonly priceHistories?: PriceHistory[];
 }
 
-ProductUrl.init(
+DailyPriceReport.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -53,23 +49,22 @@ ProductUrl.init(
         key: 'id',
       },
     },
-    url: {
-      type: DataTypes.STRING(2048),
+    averagePrice: {
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
-    notifiedAt: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      defaultValue: null,
+    day: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
     },
   },
   {
     sequelize,
-    tableName: 'product_urls',
+    tableName: 'daily_price_reports',
     indexes: [
       {
         unique: true,
-        fields: ['productId', 'storeId'],
+        fields: ['productId', 'storeId', 'day'],
       },
     ],
   }

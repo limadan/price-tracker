@@ -43,10 +43,8 @@ export class EbayScrapingStrategy implements StrategyInterface {
         throw new Error(`Invalid price format from text: "${priceText}"`);
       }
 
-      console.log(`Scraped eBay price with Playwright: ${price}`);
       return price;
     } catch (error) {
-      console.error('Playwright scraping failed:', error);
       throw new Error(
         `Failed to scrape eBay URL: ${
           error instanceof Error ? error.message : String(error)

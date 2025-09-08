@@ -1,7 +1,7 @@
 import { Logger } from '../../src/utils/Logger';
-import { ApplicationLogs } from '../../src/database/models/ApplicationLogs';
+import { ApplicationLogs } from '../../src/database/models/logs/ApplicationLogs';
 
-jest.mock('../../src/database/models/ApplicationLogs', () => ({
+jest.mock('../../src/database/models/logs/ApplicationLogs', () => ({
   ApplicationLogs: {
     create: jest.fn(),
   },

@@ -6,8 +6,7 @@
   "scripts": {
     "database:test-api": "ts-node src/database/testing-app.ts",
     "database:seed-mock-data": "ts-node src/database/seeders/mockData.ts",
-    "scheduler:scraper": "ts-node src/scrapers/Scheduler.ts",
-    "scheduler:notifier": "ts-node src/notifiers/Scheduler.ts",
+    "scheduler:run": "ts-node src/scheduler/index.ts",
     "test:scrape": "ts-node src/test-scrape.ts",
     "test": "jest"
   },
@@ -26,7 +25,8 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^4.17.1",
-    "node-cron": "^3.0.0",
+    "node-cron": "^3.0.3",
+    "node-schedule": "^2.1.1",
     "nodemailer": "^6.10.1",
     "playwright": "^1.55.0",
     "sequelize": "^6.37.7",
@@ -35,7 +35,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.8",
-    "@types/jest": "^26.0.0",
+    "@types/jest": "^26.0.24",
     "@types/node": "^14.14.31",
     "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^7.0.1",

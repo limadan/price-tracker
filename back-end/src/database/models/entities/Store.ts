@@ -1,26 +1,21 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/database';
+import sequelize from '../../config/database';
 
-interface ProductAttributes {
+interface StoreAttributes {
   id?: number;
   name: string;
-  targetPrice: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export class Product
-  extends Model<ProductAttributes>
-  implements ProductAttributes
-{
-  public id?: number;
+export class Store extends Model<StoreAttributes> implements StoreAttributes {
+  public id!: number;
   public name!: string;
-  public targetPrice!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
 
-Product.init(
+Store.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -30,14 +25,11 @@ Product.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    targetPrice: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: true,
+      unique: true,
     },
   },
   {
     sequelize,
-    tableName: 'products',
+    tableName: 'stores',
   }
 );
