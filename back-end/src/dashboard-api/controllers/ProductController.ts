@@ -23,21 +23,29 @@ export class ProductController {
         return;
       }
 
+      if (urls.length > 5) {
+        res
+          .status(400)
+          .json({ error: 'A maximum of 5 URLs can be provided per product' });
+        return;
+      }
+
       const storeIds = [...new Set(urls.map((u) => u.storeId))];
       const stores = await Store.findAll({ where: { id: storeIds } });
+
       if (stores.length !== storeIds.length) {
         res.status(400).json({ error: 'One or more stores do not exist' });
         return;
       }
 
-      for (const storeId of storeIds) {
-        const count = await ProductUrl.count({ where: { storeId } });
-        if (count >= 15) {
-          res.status(400).json({
-            error: `Store ${storeId} already has 15 products assigned for scraping`,
-          });
-          return;
-        }
+      const allProducts = await ProductUrl.findAll();
+
+      if (allProducts.length === 15) {
+        res.status(400).json({
+          error:
+            'The maximum number of products (15) has been reached. Please delete some products before adding new ones.',
+        });
+        return;
       }
 
       const product = await Product.create({ name, targetPrice });
@@ -114,9 +122,9 @@ export class ProductController {
   static async updateProduct(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const productId = parseInt(id);
       const { name, targetPrice, urls }: UpdateProductRequest = req.body;
 
+      const productId = parseInt(id);
       if (isNaN(productId)) {
         res.status(400).json({ error: 'Invalid product ID' });
         return;
@@ -132,42 +140,36 @@ export class ProductController {
       if (targetPrice !== undefined) product.targetPrice = targetPrice;
       await product.save();
 
-      if (urls) {
-        const storeIds = [...new Set(urls.map((u) => u.storeId))];
-        const stores = await Store.findAll({ where: { id: storeIds } });
-        if (stores.length !== storeIds.length) {
-          res.status(400).json({ error: 'One or more stores do not exist' });
-          return;
-        }
-
-        for (const storeId of storeIds) {
-          const existingUrls = await ProductUrl.findAll({
-            where: {
-              storeId,
-              productId: { [Op.ne]: productId },
-            },
-          });
-          if (existingUrls.length >= 15) {
-            res.status(400).json({
-              error: `Store ${storeId} already has 15 products assigned for scraping`,
-            });
-            return;
-          }
-        }
-
-        await ProductUrl.destroy({ where: { productId } });
-
-        const productUrls = urls.map((u) => ({
-          productId,
-          storeId: u.storeId,
-          url: u.url,
-        }));
-        await ProductUrl.bulkCreate(productUrls);
+      if (!urls) {
+        Logger.info(`Product updated: ${productId}`);
+        res.status(200).json({ message: 'Product updated successfully' });
+        return;
       }
+
+      if (urls.length >= 5) {
+        res.status(400).json({ error: 'At least one URL is required' });
+        return;
+      }
+      const storeIds = [...new Set(urls.map((u) => u.storeId))];
+      const stores = await Store.findAll({ where: { id: storeIds } });
+
+      if (stores.length !== storeIds.length) {
+        res.status(400).json({ error: 'One or more stores do not exist' });
+        return;
+      }
+
+      await ProductUrl.destroy({ where: { productId } });
+
+      const productUrls = urls.map((u) => ({
+        productId,
+        storeId: u.storeId,
+        url: u.url,
+      }));
+      await ProductUrl.bulkCreate(productUrls);
 
       Logger.info(`Product updated: ${productId}`);
 
-      res.json({ message: 'Product updated successfully' });
+      res.status(200).json({ message: 'Product updated successfully' });
     } catch (error) {
       Logger.error(
         'Error updating product',
