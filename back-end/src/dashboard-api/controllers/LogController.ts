@@ -34,6 +34,7 @@ export class LogController {
         message: log.message,
         severity: log.severity || 'info',
         timestamp: log.timestamp || new Date(),
+        stack: log.stack || '',
         route: log.route,
         method: log.method,
         statusCode: log.statusCode,

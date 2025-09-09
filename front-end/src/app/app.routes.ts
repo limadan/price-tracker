@@ -5,16 +5,16 @@ export const routes: Routes = [
   {
     path: 'products',
     loadComponent: () =>
-      import('./components/products/products.component').then((m) => m.ProductsComponent),
+      import('./pages/products/products.component').then((m) => m.ProductsComponent),
   },
   {
     path: 'reports',
     loadComponent: () =>
-      import('./components/reports/reports.component').then((m) => m.ReportsComponent),
+      import('./pages/reports/reports.component').then((m) => m.ReportsComponent),
   },
   {
     path: 'logs',
-    loadComponent: () => import('./components/logs/logs.component').then((m) => m.LogsComponent),
+    loadComponent: () => import('./pages/logs/logs.component').then((m) => m.LogsComponent),
   },
   { path: '**', redirectTo: '/products' },
 ];

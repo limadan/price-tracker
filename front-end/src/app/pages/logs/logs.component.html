@@ -21,17 +21,6 @@
         <option value="error">Error</option>
       </select>
     </div>
-
-    <div class="filter-group">
-      <label for="productId">Product ID:</label>
-      <input
-        type="text"
-        id="productId"
-        [(ngModel)]="productId"
-        (input)="onFilterChange()"
-        placeholder="Filter by product ID"
-      />
-    </div>
   </div>
 
   <button (click)="deleteAllLogs()" class="btn btn-danger">Delete All Logs</button>
@@ -46,6 +35,7 @@
         <th>Timestamp</th>
         <th>Severity</th>
         <th>Message</th>
+        <th>Stack</th>
         <th>Route</th>
         <th>Method</th>
         <th>Status Code</th>
@@ -56,6 +46,7 @@
         <td>{{ log.timestamp | date : 'medium' }}</td>
         <td>{{ log.severity }}</td>
         <td>{{ log.message }}</td>
+        <td>{{ log.stack || 'N/A' }}</td>
         <td>{{ log.route || 'N/A' }}</td>
         <td>{{ log.method || 'N/A' }}</td>
         <td>{{ log.statusCode || 'N/A' }}</td>

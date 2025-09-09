@@ -33,6 +33,7 @@ export interface LogResponse {
   message: string;
   severity: string;
   timestamp: Date;
+  stack: string;
   route?: string;
   method?: string;
   statusCode?: number;

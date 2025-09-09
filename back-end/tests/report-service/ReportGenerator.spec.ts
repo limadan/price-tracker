@@ -41,6 +41,7 @@ describe('ReportGenerator', () => {
   describe('generateHourlyReport', () => {
     it('should generate hourly reports and delete processed price histories', async () => {
       const hour = new Date();
+      hour.setHours(hour.getHours() - 1);
       hour.setMinutes(0, 0, 0);
 
       const mockPriceHistories = [
@@ -84,6 +85,8 @@ describe('ReportGenerator', () => {
     it('should generate daily reports from hourly reports', async () => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
 
       const mockHourlyReports = [
         { productId: 1, storeId: 1, averagePrice: 10.0 },
@@ -100,7 +103,7 @@ describe('ReportGenerator', () => {
           productId: 1,
           storeId: 1,
           averagePrice: 11.0, // (10 + 12) / 2
-          day: today,
+          day: yesterday,
         },
       ];
       expect(DailyPriceReport.bulkCreate).toHaveBeenCalledTimes(1);
@@ -119,8 +122,12 @@ describe('ReportGenerator', () => {
   describe('generateMonthlyReport', () => {
     it('should generate monthly reports from daily reports', async () => {
       const now = new Date();
-      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      const month = new Date(firstDayOfMonth);
+      const firstDayOfPreviousMonth = new Date(
+        now.getFullYear(),
+        now.getMonth() - 1,
+        1
+      );
+      const month = new Date(firstDayOfPreviousMonth);
 
       const mockDailyReports = [
         { productId: 1, storeId: 1, averagePrice: 15.5 },

@@ -5,6 +5,7 @@ import {
   ProductUrl,
   Store,
   PriceHistory,
+  MonthlyPriceReport,
 } from '../../../src/database/models';
 import { ProductController } from '../../../src/dashboard-api/controllers/ProductController';
 import { Logger } from '../../../src/utils/Logger';
@@ -25,6 +26,15 @@ jest.mock('../../../src/database/models', () => ({
     findAll: jest.fn(),
   },
   PriceHistory: {
+    destroy: jest.fn(),
+  },
+  MonthlyPriceReport: {
+    destroy: jest.fn(),
+  },
+  DailyPriceReport: {
+    destroy: jest.fn(),
+  },
+  HourlyPriceReport: {
     destroy: jest.fn(),
   },
 }));

@@ -7,6 +7,7 @@ export interface Log {
   id: number;
   message: string;
   severity: string;
+  stack: string;
   timestamp: string;
   route?: string;
   method?: string;

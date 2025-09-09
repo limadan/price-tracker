@@ -48,6 +48,7 @@ export class ReportGenerator {
       });
 
       const hour = new Date();
+      hour.setHours(hour.getHours() - 1);
       hour.setMinutes(0, 0, 0);
 
       const reports = Object.values(grouped).map((g) => {
@@ -78,14 +79,15 @@ export class ReportGenerator {
     try {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
 
       const hourlyReports = await HourlyPriceReport.findAll({
         where: {
           hour: {
-            [Op.gte]: today,
-            [Op.lt]: tomorrow,
+            [Op.gte]: yesterday,
+            [Op.lt]: today,
           },
         },
         include: ['product', 'store'],
@@ -111,7 +113,7 @@ export class ReportGenerator {
         grouped[key].prices.push(hr.averagePrice);
       });
 
-      const day = new Date(today);
+      const day = new Date(yesterday);
 
       const reports = Object.values(grouped).map((g) => {
         const averagePrice =
@@ -133,18 +135,22 @@ export class ReportGenerator {
   static async generateMonthlyReport(): Promise<void> {
     try {
       const now = new Date();
-      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      const firstDayOfNextMonth = new Date(
+      const firstDayOfCurrentMonth = new Date(
         now.getFullYear(),
-        now.getMonth() + 1,
+        now.getMonth(),
+        1
+      );
+      const firstDayOfPreviousMonth = new Date(
+        now.getFullYear(),
+        now.getMonth() - 1,
         1
       );
 
       const dailyReports = await DailyPriceReport.findAll({
         where: {
           day: {
-            [Op.gte]: firstDayOfMonth,
-            [Op.lt]: firstDayOfNextMonth,
+            [Op.gte]: firstDayOfPreviousMonth,
+            [Op.lt]: firstDayOfCurrentMonth,
           },
         },
         include: ['product', 'store'],
@@ -170,7 +176,7 @@ export class ReportGenerator {
         grouped[key].prices.push(dr.averagePrice);
       });
 
-      const month = new Date(firstDayOfMonth);
+      const month = new Date(firstDayOfPreviousMonth);
 
       const reports = Object.values(grouped).map((g) => {
         const averagePrice =

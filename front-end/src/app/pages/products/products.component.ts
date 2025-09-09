@@ -1,64 +1,34 @@
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  FormArray,
-  FormControl,
-  Validators,
-} from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import {
-  ProductService,
-  Product,
-  InsertProductRequest,
-  UpdateProductRequest,
-  ProductUrl,
-} from '../../services/product.service';
+import { ProductService, Product, ProductRequest } from '../../services/product.service';
+import { ProductFormComponent } from '../../components/product-form/product-form.component';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ProductFormComponent],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
 })
 export class ProductsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  form!: FormGroup;
   products = signal<Product[]>([]);
   isFormVisible = signal(false);
   isEditing = signal(false);
   currentProduct = signal<Product | null>(null);
   errorMessage = signal<string>('');
 
-  get urls(): FormArray {
-    return this.form.get('urls') as FormArray;
-  }
-
-  constructor(private productService: ProductService, private fb: FormBuilder) {}
+  constructor(private productService: ProductService) {}
 
   ngOnInit() {
-    this.form = this.fb.group({
-      name: ['', Validators.required],
-      targetPrice: [null],
-      urls: this.fb.array([this.createUrlGroup()]),
-    });
     this.loadProducts();
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  private createUrlGroup(): FormGroup {
-    return this.fb.group({
-      storeId: [1, Validators.required],
-      url: ['', Validators.required],
-    });
   }
 
   trackByProductId(index: number, product: Product): number {
@@ -83,34 +53,14 @@ export class ProductsComponent implements OnInit, OnDestroy {
   showInsertForm() {
     this.isEditing.set(false);
     this.currentProduct.set(null);
-    this.form.reset({
-      name: '',
-      targetPrice: null,
-      urls: this.fb.array([this.createUrlGroup()]),
-    });
     this.isFormVisible.set(true);
   }
 
   showUpdateForm(product: Product) {
-    this.isEditing.set(true);
-
     this.productService.getProductById(product.id).subscribe({
       next: (data) => {
+        this.isEditing.set(true);
         this.currentProduct.set(data);
-        this.form.patchValue({
-          name: data.name,
-          targetPrice: data.targetPrice,
-        });
-
-        this.urls.clear();
-        if (data.urls && data.urls.length > 0) {
-          data.urls.forEach((url) => {
-            this.urls.push(this.fb.group(url));
-          });
-        } else {
-          this.urls.push(this.createUrlGroup());
-        }
-
         this.isFormVisible.set(true);
         this.errorMessage.set('');
       },
@@ -125,24 +75,16 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.errorMessage.set('');
   }
 
-  addUrl() {
-    this.urls.push(this.createUrlGroup());
-  }
-
-  removeUrl(index: number) {
-    this.urls.removeAt(index);
-  }
-
-  onSubmit() {
+  onFormSubmit(productData: ProductRequest) {
     if (this.isEditing()) {
-      this.updateProduct();
+      this.updateProduct(productData);
     } else {
-      this.insertProduct();
+      this.insertProduct(productData);
     }
   }
 
-  insertProduct() {
-    this.productService.insertProduct(this.form.value).subscribe({
+  insertProduct(productData: ProductRequest) {
+    this.productService.insertProduct(productData).subscribe({
       next: () => {
         this.loadProducts();
         this.hideForm();
@@ -153,9 +95,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateProduct() {
+  updateProduct(productData: ProductRequest) {
     if (this.currentProduct()) {
-      this.productService.updateProduct(this.currentProduct()!.id, this.form.value).subscribe({
+      this.productService.updateProduct(this.currentProduct()!.id, productData).subscribe({
         next: () => {
           this.loadProducts();
           this.hideForm();

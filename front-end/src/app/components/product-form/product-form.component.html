@@ -1,0 +1,48 @@
+<div class="modal" *ngIf="isVisible">
+  <div class="modal-content">
+    <h2>{{ isEditing() ? 'Update Product' : 'Add Product' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" formControlName="name" required />
+        @if(form.get('name')?.invalid && form.get('name')?.touched){
+        <div class="error">Name is required.</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="targetPrice">Target Price:</label>
+        <input type="number" id="targetPrice" formControlName="targetPrice" step="0.01" />
+        @if(form.get('targetPrice')?.invalid && form.get('targetPrice')?.touched){
+        <div class="error">Target price is required.</div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>URLs:</label>
+        <div formArrayName="urls">
+          @for (urlCtrl of urls.controls; track urlCtrl; let i = $index) {
+          <div [formGroupName]="i" class="url-group">
+            <select formControlName="storeId" required>
+              <option value="1">Amazon</option>
+              <option value="2">eBay</option>
+            </select>
+            <input type="url" formControlName="url" placeholder="Product URL" required />
+            @if (urls.length > 1) {
+            <button type="button" class="btn btn-danger" (click)="removeUrl(i)">Remove</button>
+            }
+          </div>
+          }
+        </div>
+        <button type="button" (click)="addUrl()" class="btn btn-secondary">Add URL</button>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+          {{ isEditing() ? 'Update' : 'Add' }}
+        </button>
+        <button type="button" (click)="onCancel()" class="btn btn-danger">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

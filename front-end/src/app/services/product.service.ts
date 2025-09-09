@@ -16,16 +16,10 @@ export interface ProductUrl {
   url: string;
 }
 
-export interface InsertProductRequest {
+export interface ProductRequest {
   name: string;
   targetPrice?: number;
   urls: ProductUrl[];
-}
-
-export interface UpdateProductRequest {
-  name?: string;
-  targetPrice?: number;
-  urls?: ProductUrl[];
 }
 
 @Injectable({
@@ -44,11 +38,11 @@ export class ProductService {
     return this.http.get<Product>(`${this.apiUrl}/${id}`).pipe(catchError(this.handleError));
   }
 
-  insertProduct(product: InsertProductRequest): Observable<any> {
+  insertProduct(product: ProductRequest): Observable<any> {
     return this.http.post(this.apiUrl, product).pipe(catchError(this.handleError));
   }
 
-  updateProduct(id: number, product: UpdateProductRequest): Observable<any> {
+  updateProduct(id: number, product: ProductRequest): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, product).pipe(catchError(this.handleError));
   }
 

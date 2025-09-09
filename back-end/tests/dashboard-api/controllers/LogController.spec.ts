@@ -53,6 +53,7 @@ describe('LogController', () => {
           message: 'Log message 1',
           severity: 'info',
           timestamp: new Date(),
+          stack: 'Error stack 1',
           route: '/api/test',
           method: 'GET',
           statusCode: 200,

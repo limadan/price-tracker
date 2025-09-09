@@ -5,6 +5,9 @@ import {
   ProductUrl,
   Store,
   PriceHistory,
+  MonthlyPriceReport,
+  HourlyPriceReport,
+  DailyPriceReport,
 } from '../../database/models';
 import {
   InsertProductRequest,
@@ -102,6 +105,11 @@ export class ProductController {
         },
       });
       await ProductUrl.destroy({ where: { productId } });
+
+      await MonthlyPriceReport.destroy({ where: { productId } });
+      await DailyPriceReport.destroy({ where: { productId } });
+      await HourlyPriceReport.destroy({ where: { productId } });
+
       await product.destroy();
 
       Logger.info(`Product deleted: ${productId}`);
