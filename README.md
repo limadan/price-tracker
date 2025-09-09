@@ -37,9 +37,7 @@ This turns a manual, frustrating task into an efficient, set-and-forget process.
 
 - **Multi-Store Scraping:** Track products from Amazon or Ebay e-commerce websites.
 - **Target Price Alerts:** Get notified the moment a product's price hits your desired level.
-- **Price Drop Notifications:** Receive alerts even if the target isn't met but the price has dropped since the last check.
 - **Historical Price Tracking:** View the price history of a product to make informed buying decisions.
-- **Email:** Choose your preferred method for receiving alerts.
 - **Web Interface:** A simple UI to easily add, view, and manage your tracked products.
 
 ## 📦 Installation
@@ -52,18 +50,30 @@ This turns a manual, frustrating task into an efficient, set-and-forget process.
    ```bash
    cd price-tracker
    ```
-3. Install the dependencies:
+3. Install the dependencies for the backend project:
    ```bash
-   npm install
+   cd backend && npm install
    ```
-4. Set up your environment variables by copying `.env.example` to `.env` and filling in the required values.
+4. Install the dependencies for the frontend project:
+   ```bash
+   cd frontend && npm install
+   ```
+5. Set up your environment variables by copying `.env.example` to `.env` and filling in the required values.
 
 ## 🚀 Usage
 
-To start the application, run:
+To start the application, run both the backend and frontend.
+
+To run the backend, use:
 
 ```bash
-npm start
+cd backend && npm run dashboard-api:run
+```
+
+To run the frontend, use:
+
+```bash
+cd frontend && npm run start
 ```
 
 ## 🧪 Testing
@@ -73,6 +83,10 @@ To run the tests, use:
 ```bash
 npm test
 ```
+
+## Swagger Documentation
+
+To access the swagger documentation for the API, access `http://localhost:3000/api-docs`.
 
 ## 📄 License
 

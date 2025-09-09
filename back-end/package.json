@@ -6,9 +6,7 @@
   "scripts": {
     "database:test-api": "ts-node src/database/testing-app.ts",
     "database:seed-mock-data": "ts-node src/database/seeders/mockData.ts",
-    "scheduler:run": "ts-node src/scheduler/index.ts",
     "dashboard-api:run": "ts-node src/dashboard-api/app.ts",
-    "test:scrape": "ts-node src/test-scrape.ts",
     "test": "jest"
   },
   "keywords": [
@@ -31,7 +29,9 @@
     "nodemailer": "^6.10.1",
     "playwright": "^1.55.0",
     "sequelize": "^6.37.7",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
@@ -41,6 +41,8 @@
     "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^7.0.1",
     "@types/supertest": "^6.0.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "jest": "^26.6.3",
     "ts-jest": "^26.5.6",
     "ts-node": "^10.9.1",

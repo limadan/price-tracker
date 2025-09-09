@@ -1,11 +1,19 @@
 import express from 'express';
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './swagger';
+import sequelize from '../database/config/database';
+
 import { productRoutes } from './routes/products';
 import { reportRoutes } from './routes/reports';
 import { logRoutes } from './routes/logs';
+import { storeRoutes } from './routes/store';
 import { Logger } from '../utils/Logger';
-import sequelize from '../database/config/database';
-import '../database/models'; // Import all models to register them with Sequelize
+import { startScheduler } from '../scheduler';
+
+import '../database/models';
+
+startScheduler();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,10 +22,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Swagger Docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Routes
 app.use('/api/products', productRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/logs', logRoutes);
+app.use('/api/stores', storeRoutes);
 
 // Error handling middleware
 app.use(

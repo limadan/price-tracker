@@ -20,7 +20,7 @@ const notifiers = [new EmailNotifier()];
 const baseScraper = new BaseScraper(scrapingStrategies);
 const baseNotifier = new BaseNotifier(notifiers);
 
-function start() {
+export function startScheduler() {
   cron.schedule('*/5 * * * *', async () => {
     try {
       await baseScraper.scrapeAllUrls();
@@ -83,5 +83,3 @@ function start() {
 
   Logger.info('Scheduler started successfully.');
 }
-
-start();
