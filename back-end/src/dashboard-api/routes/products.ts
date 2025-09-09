@@ -15,4 +15,7 @@ router.put('/:id', ProductController.updateProduct);
 // GET /api/products - Get all products
 router.get('/', ProductController.getProducts);
 
+// GET /api/products/:id - Get product by ID
+router.get('/:id', ProductController.getProductById);
+
 export { router as productRoutes };

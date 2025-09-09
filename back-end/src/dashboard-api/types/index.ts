@@ -15,6 +15,7 @@ export interface ProductResponse {
   name: string;
   targetPrice: number;
   lowestPrice?: number;
+  urls?: { url: string; storeId: number }[];
 }
 
 export interface ReportResponse {

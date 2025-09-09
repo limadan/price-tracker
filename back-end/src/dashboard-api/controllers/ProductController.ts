@@ -115,6 +115,7 @@ export class ProductController {
         req.method,
         req.path
       );
+      console.error(error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -227,6 +228,72 @@ export class ProductController {
     } catch (error) {
       Logger.error(
         'Error retrieving products',
+        error instanceof Error ? error.stack : undefined,
+        500,
+        req.method,
+        req.path
+      );
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  static async getProductById(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      const productId = parseInt(id);
+
+      if (isNaN(productId)) {
+        res.status(400).json({ error: 'Invalid product ID' });
+        return;
+      }
+      const product = await Product.findByPk(productId, {
+        include: [
+          {
+            model: ProductUrl,
+            as: 'productUrls',
+            include: [
+              { model: Store, as: 'store' },
+              { model: PriceHistory, as: 'priceHistories' },
+            ],
+          },
+        ],
+      });
+
+      if (!product) {
+        res.status(404).json({ error: 'Product not found' });
+        return;
+      }
+
+      let lowestPrice: number | undefined;
+      if (product.productUrls) {
+        const prices: number[] = [];
+        product.productUrls.forEach((pu: any) => {
+          if (pu.priceHistories) {
+            pu.priceHistories.forEach((ph: any) =>
+              prices.push(parseFloat(ph.price.toString()))
+            );
+          }
+        });
+        if (prices.length > 0) {
+          lowestPrice = Math.min(...prices);
+        }
+      }
+
+      const productResponse: ProductResponse = {
+        id: product.id!,
+        name: product.name,
+        targetPrice: product.targetPrice || 0,
+        lowestPrice,
+        urls: (product.productUrls ?? []).map((pu) => ({
+          storeId: pu.storeId,
+          url: pu.url,
+        })),
+      };
+
+      res.json(productResponse);
+    } catch (error) {
+      Logger.error(
+        'Error retrieving product by ID',
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,

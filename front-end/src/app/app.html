@@ -1,0 +1,22 @@
+<header class="navbar">
+  <div class="navbar-brand">
+    <a routerLink="/">{{ title() }}</a>
+  </div>
+  <nav class="navbar-links">
+    <ul>
+      <li>
+        <a routerLink="/products" routerLinkActive="active">Products</a>
+      </li>
+      <li>
+        <a routerLink="/reports" routerLinkActive="active">Reports</a>
+      </li>
+      <li>
+        <a routerLink="/logs" routerLinkActive="active">Logs</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main class="content">
+  <router-outlet />
+</main>

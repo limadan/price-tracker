@@ -1,0 +1,49 @@
+<div class="container">
+  <h1>Reports</h1>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label for="reportType">Report Type:</label>
+      <select id="reportType" [(ngModel)]="reportType" (change)="onReportTypeChange()">
+        <option value="hourly">Hourly</option>
+        <option value="daily">Daily</option>
+        <option value="monthly">Monthly</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="startDate">Start Date:</label>
+      <input type="date" id="startDate" [(ngModel)]="startDate" (change)="onDateChange()" />
+    </div>
+
+    <div class="filter-group">
+      <label for="endDate">End Date:</label>
+      <input type="date" id="endDate" [(ngModel)]="endDate" (change)="onDateChange()" />
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage()" class="alert alert-error">
+    {{ errorMessage() }}
+  </div>
+
+  <table class="table" *ngIf="reports().length > 0">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Store</th>
+        <th>Average Price</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let report of reports()">
+        <td>{{ report.product?.name || 'N/A' }}</td>
+        <td>{{ report.store?.name || 'N/A' }}</td>
+        <td>{{ report.averagePrice | currency }}</td>
+        <td>{{ report.date | date : 'medium' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="reports().length === 0" class="no-data">No reports found.</div>
+</div>

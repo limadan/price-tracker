@@ -4,6 +4,8 @@ import { productRoutes } from './routes/products';
 import { reportRoutes } from './routes/reports';
 import { logRoutes } from './routes/logs';
 import { Logger } from '../utils/Logger';
+import sequelize from '../database/config/database';
+import '../database/models'; // Import all models to register them with Sequelize
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -42,8 +44,17 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Not Found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Dashboard API listening on port ${PORT}`);
-});
+// Sync database and start server
+sequelize
+  .sync()
+  .then(() => {
+    console.log('Database synchronized successfully.');
+    app.listen(PORT, () => {
+      console.log(`Dashboard API listening on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Unable to sync database:', error);
+  });
 
 export default app;
