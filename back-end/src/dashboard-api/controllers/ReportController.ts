@@ -38,7 +38,9 @@ export class ReportController {
       res.json(response);
     } catch (error) {
       Logger.error(
-        'Error retrieving hourly reports',
+        `Error retrieving hourly reports:  : ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,
@@ -77,7 +79,9 @@ export class ReportController {
       res.json(response);
     } catch (error) {
       Logger.error(
-        'Error retrieving daily reports',
+        `Error retrieving daily reports:  : ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,
@@ -117,7 +121,9 @@ export class ReportController {
       res.json(response);
     } catch (error) {
       Logger.error(
-        'Error retrieving monthly reports',
+        `Error retrieving monthly reports:  : ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,

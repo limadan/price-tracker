@@ -25,11 +25,16 @@
 
   <button (click)="deleteAllLogs()" class="btn btn-danger">Delete All Logs</button>
 
-  <div *ngIf="errorMessage()" class="alert alert-error">
+  @if(errorMessage()){
+  <div class="alert alert-error">
     {{ errorMessage() }}
   </div>
+  } @else if(logs().length === 0){
+  <div class="no-data">No logs found.</div>
 
-  <table class="table" *ngIf="logs().length > 0">
+  } @else{
+
+  <table class="table">
     <thead>
       <tr>
         <th>Timestamp</th>
@@ -42,7 +47,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let log of logs()">
+      @for(log of logs(); track log.id; let i = $index) {
+      <tr>
         <td>{{ log.timestamp | date : 'medium' }}</td>
         <td>{{ log.severity }}</td>
         <td>{{ log.message }}</td>
@@ -51,8 +57,8 @@
         <td>{{ log.method || 'N/A' }}</td>
         <td>{{ log.statusCode || 'N/A' }}</td>
       </tr>
+      }
     </tbody>
   </table>
-
-  <div *ngIf="logs().length === 0" class="no-data">No logs found.</div>
+  }
 </div>

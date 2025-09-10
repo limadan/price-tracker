@@ -68,7 +68,9 @@ export class ProductController {
       });
     } catch (error) {
       Logger.error(
-        'Error inserting product',
+        `Error inserting product: ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,
@@ -117,7 +119,9 @@ export class ProductController {
       res.json({ message: 'Product deleted successfully' });
     } catch (error) {
       Logger.error(
-        'Error deleting product',
+        `Error deleting product: ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,
@@ -181,7 +185,9 @@ export class ProductController {
       res.status(200).json({ message: 'Product updated successfully' });
     } catch (error) {
       Logger.error(
-        'Error updating product',
+        `Error updating product: ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,
@@ -235,7 +241,9 @@ export class ProductController {
       res.json(response);
     } catch (error) {
       Logger.error(
-        'Error retrieving products',
+        `Error retrieving products: ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,
@@ -301,7 +309,9 @@ export class ProductController {
       res.json(productResponse);
     } catch (error) {
       Logger.error(
-        'Error retrieving product by ID',
+        `Error retrieving product by ID: ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,

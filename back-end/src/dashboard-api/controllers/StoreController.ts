@@ -9,7 +9,9 @@ export class StoreController {
       res.json(stores);
     } catch (error) {
       Logger.error(
-        'Error retrieving stores',
+        `Error retrieving stores: ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,
@@ -37,7 +39,9 @@ export class StoreController {
       res.status(201).json(newStore);
     } catch (error) {
       Logger.error(
-        'Error adding store',
+        `Error adding store : ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,

@@ -3,42 +3,41 @@
 
   <button (click)="showInsertForm()" class="btn btn-primary">Add Product</button>
 
-  <ng-container *ngIf="errorMessage()">
-    <div class="alert alert-error">
-      {{ errorMessage() }}
-    </div>
-  </ng-container>
+  @if(errorMessage()){
+  <div class="alert alert-error">
+    {{ errorMessage() }}
+  </div>
+  } @if(products().length > 0){
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Target Price</th>
+        <th>Lowest Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(product of products(); track product.id; let i = $index) {
+      <tr>
+        <td>{{ product.name }}</td>
+        <td>{{ product.targetPrice | currency }}</td>
+        <td>{{ product.lowestPrice | currency }}</td>
+        <td>
+          <button (click)="showUpdateForm(product)" class="btn btn-secondary">Edit</button>
+          <button (click)="deleteProduct(product.id)" class="btn btn-danger">Delete</button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  } @else {
+  <div class="no-data">No products found.</div>
 
-  <ng-container *ngIf="products().length > 0; else noProducts">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Target Price</th>
-          <th>Lowest Price</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let product of products(); trackBy: trackByProductId">
-          <td>{{ product.name }}</td>
-          <td>{{ product.targetPrice | currency }}</td>
-          <td>{{ product.lowestPrice | currency }}</td>
-          <td>
-            <button (click)="showUpdateForm(product)" class="btn btn-secondary">Edit</button>
-            <button (click)="deleteProduct(product.id)" class="btn btn-danger">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </ng-container>
-
-  <ng-template #noProducts>
-    <div class="no-data">No products found.</div>
-  </ng-template>
-
+  }
   <app-product-form
     [isVisible]="isFormVisible()"
+    [isEditing]="isEditing()"
     [product]="currentProduct()"
     (formSubmitted)="onFormSubmit($event)"
     (formCancelled)="hideForm()"

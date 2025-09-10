@@ -46,7 +46,9 @@ export class EmailNotifier implements NotifierInterface {
       );
     } catch (error) {
       Logger.error(
-        `Failed to send email for product ${alertData.productName}: ${error}`,
+        `Failed to send email for product ${alertData.productName}: ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined
       );
 

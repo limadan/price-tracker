@@ -61,11 +61,5 @@ DailyPriceReport.init(
   {
     sequelize,
     tableName: 'daily_price_reports',
-    indexes: [
-      {
-        unique: true,
-        fields: ['productId', 'storeId', 'day'],
-      },
-    ],
   }
 );

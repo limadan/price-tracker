@@ -69,7 +69,7 @@ ProductUrl.init(
     indexes: [
       {
         unique: true,
-        fields: ['productId', 'storeId'],
+        fields: ['productId'],
       },
     ],
   }

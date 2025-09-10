@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
-import { swaggerSpec } from './swagger';
 import sequelize from '../database/config/database';
+import { swaggerSpec } from './swagger';
 
 import { productRoutes } from './routes/products';
 import { reportRoutes } from './routes/reports';
@@ -10,10 +10,11 @@ import { logRoutes } from './routes/logs';
 import { storeRoutes } from './routes/store';
 import { Logger } from '../utils/Logger';
 import { startScheduler } from '../scheduler';
+import dotenv from 'dotenv';
 
 import '../database/models';
 
-startScheduler();
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -41,7 +42,9 @@ app.use(
   ) => {
     console.error(err.stack);
     Logger.error(
-      'Unhandled error',
+      `Unhandled error : ${
+        err instanceof Error ? `${err.name} - ${err.message}` : ''
+      }`,
       err instanceof Error ? err.stack : undefined,
       500,
       req.method,
@@ -63,6 +66,7 @@ sequelize
     console.log('Database synchronized successfully.');
     app.listen(PORT, () => {
       console.log(`Dashboard API listening on port ${PORT}`);
+      startScheduler();
     });
   })
   .catch((error) => {

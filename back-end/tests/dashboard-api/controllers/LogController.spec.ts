@@ -135,7 +135,7 @@ describe('LogController', () => {
         error: 'Internal server error',
       });
       expect(Logger.error).toHaveBeenCalledWith(
-        'Error retrieving logs',
+        `Error retrieving logs: ${error.name} - ${error.message}`,
         expect.any(String),
         500,
         'TEST',
@@ -168,7 +168,7 @@ describe('LogController', () => {
         error: 'Internal server error',
       });
       expect(Logger.error).toHaveBeenCalledWith(
-        'Error deleting logs',
+        `Error deleting logs : ${error.name} - ${error.message}`,
         expect.any(String),
         500,
         'TEST',

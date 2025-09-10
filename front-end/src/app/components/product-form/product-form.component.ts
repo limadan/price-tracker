@@ -6,10 +6,15 @@ import {
   OnChanges,
   SimpleChanges,
   signal,
+  input,
+  OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Product, ProductUrl, ProductRequest } from '../../services/product.service';
+import { StoreService, Store } from '../../services/store.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-product-form',
@@ -18,21 +23,27 @@ import { Product, ProductUrl, ProductRequest } from '../../services/product.serv
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.scss'],
 })
-export class ProductFormComponent implements OnChanges {
-  @Input() product: Product | null = null;
-  @Input() isVisible: boolean = false;
-  @Output() formSubmitted = new EventEmitter<ProductRequest>();
-  @Output() formCancelled = new EventEmitter<void>();
+export class ProductFormComponent implements OnChanges, OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
+  product = input<Product | null>();
+  isVisible = input<boolean>(false);
+  isEditing = input<boolean>(false);
+
+  errorMessage = signal<string>('');
 
   form!: FormGroup;
-  isEditing = signal(false);
-  errorMessage = signal<string>('');
+
+  stores: Store[] = [];
+
+  @Output() formSubmitted = new EventEmitter<ProductRequest>();
+  @Output() formCancelled = new EventEmitter<void>();
 
   get urls(): FormArray {
     return this.form.get('urls') as FormArray;
   }
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private storeService: StoreService) {
     this.form = this.fb.group({
       name: ['', Validators.required],
       targetPrice: [null, Validators.required],
@@ -40,18 +51,42 @@ export class ProductFormComponent implements OnChanges {
     });
   }
 
+  ngOnInit(): void {
+    this.form.reset({
+      name: '',
+      targetPrice: null,
+    });
+    this.urls.clear();
+    this.urls.push(this.createUrlGroup());
+    this.storeService
+      .getStores()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data: Store[]) => {
+          this.stores = data;
+        },
+        error: (error) => {
+          this.errorMessage.set(error);
+        },
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['product'] || changes['isVisible']) {
-      if (this.isVisible) {
-        this.isEditing.set(!!this.product);
-        if (this.product) {
+      if (this.isVisible()) {
+        if (this.product()) {
           this.form.patchValue({
-            name: this.product.name,
-            targetPrice: this.product.targetPrice,
+            name: this.product()?.name,
+            targetPrice: this.product()?.targetPrice,
           });
           this.urls.clear();
-          if (this.product.urls && this.product.urls.length > 0) {
-            this.product.urls.forEach((url) => {
+          if (this.product()?.urls && (this.product()?.urls ?? []).length > 0) {
+            (this.product()?.urls ?? []).forEach((url) => {
               this.urls.push(this.createUrlGroup(url));
             });
           } else {

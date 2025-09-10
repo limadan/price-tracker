@@ -61,11 +61,5 @@ MonthlyPriceReport.init(
   {
     sequelize,
     tableName: 'monthly_price_reports',
-    indexes: [
-      {
-        unique: true,
-        fields: ['productId', 'storeId', 'month'],
-      },
-    ],
   }
 );

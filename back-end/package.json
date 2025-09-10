@@ -7,6 +7,7 @@
     "database:test-api": "ts-node src/database/testing-app.ts",
     "database:seed-mock-data": "ts-node src/database/seeders/mockData.ts",
     "dashboard-api:run": "ts-node src/dashboard-api/app.ts",
+    "test-report": "ts-node src/report-service/test-report.ts",
     "test": "jest"
   },
   "keywords": [

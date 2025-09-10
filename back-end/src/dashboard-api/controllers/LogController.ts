@@ -43,7 +43,9 @@ export class LogController {
       res.json(response);
     } catch (error) {
       Logger.error(
-        'Error retrieving logs',
+        `Error retrieving logs: ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,
@@ -59,7 +61,9 @@ export class LogController {
       res.status(204).send();
     } catch (error) {
       Logger.error(
-        'Error deleting logs',
+        `Error deleting logs : ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined,
         500,
         req.method,

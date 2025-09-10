@@ -27,7 +27,9 @@ export function startScheduler() {
       Logger.info('Scraper completed successfully.');
     } catch (error) {
       Logger.error(
-        'Error running scraper:',
+        `Error running scraper: ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined
       );
     }
@@ -36,7 +38,9 @@ export function startScheduler() {
       await baseNotifier.processNotifications();
     } catch (error) {
       Logger.error(
-        'Error running notifier:',
+        `Error running notifier: ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined
       );
     }
@@ -49,7 +53,9 @@ export function startScheduler() {
       Logger.info('Hourly report generated successfully.');
     } catch (error) {
       Logger.error(
-        'Error generating hourly report:',
+        `Error generating hourly report: ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined
       );
     }
@@ -62,7 +68,9 @@ export function startScheduler() {
       Logger.info('Daily report generated successfully.');
     } catch (error) {
       Logger.error(
-        'Error generating daily report:',
+        `Error generating daily report : ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined
       );
     }
@@ -75,7 +83,9 @@ export function startScheduler() {
       Logger.info('Monthly report generated successfully.');
     } catch (error) {
       Logger.error(
-        'Error generating monthly report:',
+        `Error generating monthly report : ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined
       );
     }

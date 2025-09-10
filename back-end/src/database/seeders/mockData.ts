@@ -1,3 +1,4 @@
+import sequelize from '../config/database';
 import { Product, Store, ProductUrl, PriceHistory } from '../models';
 
 async function seedMockData() {
@@ -97,4 +98,7 @@ async function seedMockData() {
 }
 
 // Execute the seeding
-seedMockData();
+sequelize.sync().then(() => {
+  console.log('Database and tables created successfully!');
+  seedMockData();
+});

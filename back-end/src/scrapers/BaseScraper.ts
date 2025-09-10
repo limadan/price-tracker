@@ -15,7 +15,9 @@ export class BaseScraper {
       this.stores = await Store.findAll();
     } catch (error) {
       Logger.error(
-        'Error fetching stores:',
+        `Error fetching stores : ${
+          error instanceof Error ? `${error.name} - ${error.message}` : ''
+        }`,
         error instanceof Error ? error.stack : undefined
       );
       this.stores = [];
@@ -84,7 +86,9 @@ export class BaseScraper {
       })
       .catch((error) => {
         Logger.error(
-          `Error during scraping process: ${error}`,
+          `Error during scraping process : ${
+            error instanceof Error ? `${error.name} - ${error.message}` : ''
+          }`,
           error instanceof Error ? error.stack : undefined
         );
       });

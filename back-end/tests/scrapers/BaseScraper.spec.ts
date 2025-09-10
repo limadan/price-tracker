@@ -61,7 +61,7 @@ describe('BaseScraper', () => {
 
       expect(scrapper.stores).toEqual([]);
       expect(Logger.error).toHaveBeenCalledWith(
-        'Error fetching stores:',
+        `Error fetching stores : ${error.name} - ${error.message}`,
         expect.any(String)
       );
     });

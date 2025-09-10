@@ -61,11 +61,5 @@ HourlyPriceReport.init(
   {
     sequelize,
     tableName: 'hourly_price_reports',
-    indexes: [
-      {
-        unique: true,
-        fields: ['productId', 'storeId', 'hour'],
-      },
-    ],
   }
 );

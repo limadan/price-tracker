@@ -31,10 +31,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  trackByProductId(index: number, product: Product): number {
-    return product.id;
-  }
-
   loadProducts() {
     this.productService
       .getProducts()
@@ -57,17 +53,20 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   showUpdateForm(product: Product) {
-    this.productService.getProductById(product.id).subscribe({
-      next: (data) => {
-        this.isEditing.set(true);
-        this.currentProduct.set(data);
-        this.isFormVisible.set(true);
-        this.errorMessage.set('');
-      },
-      error: (error) => {
-        this.errorMessage.set(error);
-      },
-    });
+    this.productService
+      .getProductById(product.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.isEditing.set(true);
+          this.currentProduct.set(data);
+          this.isFormVisible.set(true);
+          this.errorMessage.set('');
+        },
+        error: (error) => {
+          this.errorMessage.set(error);
+        },
+      });
   }
 
   hideForm() {
@@ -84,20 +83,10 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   insertProduct(productData: ProductRequest) {
-    this.productService.insertProduct(productData).subscribe({
-      next: () => {
-        this.loadProducts();
-        this.hideForm();
-      },
-      error: (error) => {
-        this.errorMessage.set(error);
-      },
-    });
-  }
-
-  updateProduct(productData: ProductRequest) {
-    if (this.currentProduct()) {
-      this.productService.updateProduct(this.currentProduct()!.id, productData).subscribe({
+    this.productService
+      .insertProduct(productData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
         next: () => {
           this.loadProducts();
           this.hideForm();
@@ -106,6 +95,22 @@ export class ProductsComponent implements OnInit, OnDestroy {
           this.errorMessage.set(error);
         },
       });
+  }
+
+  updateProduct(productData: ProductRequest) {
+    if (this.currentProduct()) {
+      this.productService
+        .updateProduct(this.currentProduct()!.id, productData)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.loadProducts();
+            this.hideForm();
+          },
+          error: (error) => {
+            this.errorMessage.set(error);
+          },
+        });
     }
   }
 

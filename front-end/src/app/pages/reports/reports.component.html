@@ -22,11 +22,14 @@
     </div>
   </div>
 
-  <div *ngIf="errorMessage()" class="alert alert-error">
+  @if(errorMessage()) {
+  <div class="alert alert-error">
     {{ errorMessage() }}
   </div>
-
-  <table class="table" *ngIf="reports().length > 0">
+  } @else if(reports().length === 0) {
+  <div class="no-data">No reports found.</div>
+  } @else {
+  <table class="table">
     <thead>
       <tr>
         <th>Product</th>
@@ -44,6 +47,5 @@
       </tr>
     </tbody>
   </table>
-
-  <div *ngIf="reports().length === 0" class="no-data">No reports found.</div>
+  }
 </div>
