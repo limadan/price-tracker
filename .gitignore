@@ -2,6 +2,7 @@ back-end/node_modules
 back-end/coverage
 back-end/.env
 back-end/database/config/database.sqlite
+back-end/dist
 
 front-end/node_modules
 front-end/coverage
