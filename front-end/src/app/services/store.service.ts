@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface Store {
   id: number;
@@ -12,7 +13,7 @@ export interface Store {
   providedIn: 'root',
 })
 export class StoreService {
-  private apiUrl = 'http://localhost:3000/api/stores';
+  private apiUrl = environment.apiUrl + '/api/stores';
 
   constructor(private http: HttpClient) {}
 

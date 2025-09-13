@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface Log {
   id: number;
@@ -18,7 +19,7 @@ export interface Log {
   providedIn: 'root',
 })
 export class LogService {
-  private apiUrl = 'http://localhost:3000/api/logs';
+  private apiUrl = environment.apiUrl + '/api/logs';
 
   constructor(private http: HttpClient) {}
 

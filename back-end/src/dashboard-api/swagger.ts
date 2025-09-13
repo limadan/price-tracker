@@ -13,6 +13,10 @@ const swaggerDefinition = {
       url: 'http://localhost:3000/api',
       description: 'Development server',
     },
+    {
+      url: 'https://price-tracker-5i50.onrender.com/api',
+      description: 'Production server',
+    },
   ],
 };
 
