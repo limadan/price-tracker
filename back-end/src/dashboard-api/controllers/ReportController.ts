@@ -11,7 +11,7 @@ import { Logger } from '../../utils/Logger';
 export class ReportController {
   static async getHourlyReports(req: Request, res: Response): Promise<void> {
     try {
-      const { startDate, endDate } = req.query;
+      const { startDate, endDate, productId, storeId } = req.query;
 
       const whereClause: any = {};
       if (startDate || endDate) {
@@ -19,6 +19,8 @@ export class ReportController {
         if (startDate) whereClause.hour[Op.gte] = new Date(startDate as string);
         if (endDate) whereClause.hour[Op.lte] = new Date(endDate as string);
       }
+      if (productId) whereClause.productId = parseInt(productId as string);
+      if (storeId) whereClause.storeId = parseInt(storeId as string);
 
       const reports = await HourlyPriceReport.findAll({
         where: whereClause,
@@ -52,7 +54,7 @@ export class ReportController {
 
   static async getDailyReports(req: Request, res: Response): Promise<void> {
     try {
-      const { startDate, endDate } = req.query;
+      const { startDate, endDate, productId, storeId } = req.query;
 
       const whereClause: any = {};
       if (startDate || endDate) {
@@ -60,6 +62,8 @@ export class ReportController {
         if (startDate) whereClause.day[Op.gte] = new Date(startDate as string);
         if (endDate) whereClause.day[Op.lte] = new Date(endDate as string);
       }
+      if (productId) whereClause.productId = parseInt(productId as string);
+      if (storeId) whereClause.storeId = parseInt(storeId as string);
 
       const reports = await DailyPriceReport.findAll({
         where: whereClause,
@@ -93,7 +97,7 @@ export class ReportController {
 
   static async getMonthlyReports(req: Request, res: Response): Promise<void> {
     try {
-      const { startDate, endDate } = req.query;
+      const { startDate, endDate, productId, storeId } = req.query;
 
       const whereClause: any = {};
       if (startDate || endDate) {
@@ -102,6 +106,8 @@ export class ReportController {
           whereClause.month[Op.gte] = new Date(startDate as string);
         if (endDate) whereClause.month[Op.lte] = new Date(endDate as string);
       }
+      if (productId) whereClause.productId = parseInt(productId as string);
+      if (storeId) whereClause.storeId = parseInt(storeId as string);
 
       const reports = await MonthlyPriceReport.findAll({
         where: whereClause,

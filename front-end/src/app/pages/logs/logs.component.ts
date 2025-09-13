@@ -1,26 +1,35 @@
 import { Component, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { LogService, Log } from '../../services/log.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-logs',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './logs.component.html',
   styleUrl: './logs.component.scss',
 })
 export class LogsComponent implements OnDestroy {
   logs = signal<Log[]>([]);
-  startDate = signal<string>('');
-  endDate = signal<string>('');
-  severity = signal<string>('');
-  productId = signal<string>('');
   errorMessage = signal<string>('');
-  destroy$ = new Subject<void>();
+
+  form: FormGroup;
+
+  private destroy$ = new Subject<void>();
 
   constructor(private logService: LogService) {
+    this.form = new FormGroup({
+      startDate: new FormControl(''),
+      endDate: new FormControl(''),
+      severity: new FormControl(''),
+    });
+
+    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.loadLogs();
+    });
+
     this.loadLogs();
   }
 
@@ -32,10 +41,10 @@ export class LogsComponent implements OnDestroy {
   loadLogs() {
     this.errorMessage.set('');
     const filters = {
-      startDate: this.startDate(),
-      endDate: this.endDate(),
-      severity: this.severity(),
-      productId: this.productId(),
+      startDate: this.form.get('startDate')?.value,
+      endDate: this.form.get('endDate')?.value,
+      severity: this.form.get('severity')?.value,
+      productId: '',
     };
 
     this.logService
@@ -65,9 +74,5 @@ export class LogsComponent implements OnDestroy {
           },
         });
     }
-  }
-
-  onFilterChange() {
-    this.loadLogs();
   }
 }

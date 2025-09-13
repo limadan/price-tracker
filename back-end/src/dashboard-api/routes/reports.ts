@@ -22,6 +22,16 @@ const router = Router();
  *           type: string
  *           format: date-time
  *         description: End date for report filtering
+ *       - in: query
+ *         name: productId
+ *         schema:
+ *           type: integer
+ *         description: Filter reports by product ID
+ *       - in: query
+ *         name: storeId
+ *         schema:
+ *           type: integer
+ *         description: Filter reports by store ID
  *     responses:
  *       200:
  *         description: A list of hourly reports
@@ -55,6 +65,16 @@ router.get('/hourly', ReportController.getHourlyReports);
  *           type: string
  *           format: date-time
  *         description: End date for report filtering
+ *       - in: query
+ *         name: productId
+ *         schema:
+ *           type: integer
+ *         description: Filter reports by product ID
+ *       - in: query
+ *         name: storeId
+ *         schema:
+ *           type: integer
+ *         description: Filter reports by store ID
  *     responses:
  *       200:
  *         description: A list of daily reports
@@ -75,6 +95,17 @@ router.get('/daily', ReportController.getDailyReports);
  *   get:
  *     summary: Retrieve monthly price reports
  *     tags: [Reports]
+ *     parameters:
+ *       - in: query
+ *         name: productId
+ *         schema:
+ *           type: integer
+ *         description: Filter reports by product ID
+ *       - in: query
+ *         name: storeId
+ *         schema:
+ *           type: integer
+ *         description: Filter reports by store ID
  *     responses:
  *       200:
  *         description: A list of monthly reports

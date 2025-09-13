@@ -1,27 +1,29 @@
 <div class="container">
   <h1>Application Logs</h1>
 
-  <div class="filters">
-    <div class="filter-group">
-      <label for="startDate">Start Date:</label>
-      <input type="date" id="startDate" [(ngModel)]="startDate" (change)="onFilterChange()" />
-    </div>
+  <form [formGroup]="form">
+    <div class="filters">
+      <div class="filter-group">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" formControlName="startDate" />
+      </div>
 
-    <div class="filter-group">
-      <label for="endDate">End Date:</label>
-      <input type="date" id="endDate" [(ngModel)]="endDate" (change)="onFilterChange()" />
-    </div>
+      <div class="filter-group">
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" formControlName="endDate" />
+      </div>
 
-    <div class="filter-group">
-      <label for="severity">Severity:</label>
-      <select id="severity" [(ngModel)]="severity" (change)="onFilterChange()">
-        <option value="">All</option>
-        <option value="info">Info</option>
-        <option value="warn">Warn</option>
-        <option value="error">Error</option>
-      </select>
+      <div class="filter-group">
+        <label for="severity">Severity:</label>
+        <select id="severity" formControlName="severity">
+          <option value="">All</option>
+          <option value="info">Info</option>
+          <option value="warn">Warn</option>
+          <option value="error">Error</option>
+        </select>
+      </div>
     </div>
-  </div>
+  </form>
 
   <button (click)="deleteAllLogs()" class="btn btn-danger">Delete All Logs</button>
 

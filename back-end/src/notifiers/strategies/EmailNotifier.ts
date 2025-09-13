@@ -57,10 +57,10 @@ export class EmailNotifier implements NotifierInterface {
   }
 
   private createHtmlTemplate(data: PriceAlertData): string {
-    const currentPriceFormatted = `R$ ${data.currentPrice
+    const currentPriceFormatted = `$ ${data.currentPrice
       .toFixed(2)
       .replace('.', ',')}`;
-    const targetPriceFormatted = `R$ ${data.targetPrice
+    const targetPriceFormatted = `$ ${data.targetPrice
       .toFixed(2)
       .replace('.', ',')}`;
 

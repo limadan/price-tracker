@@ -21,28 +21,49 @@ export class ReportService {
 
   constructor(private http: HttpClient) {}
 
-  getHourlyReports(startDate?: string, endDate?: string): Observable<Report[]> {
+  getHourlyReports(
+    startDate?: string,
+    endDate?: string,
+    productId?: number,
+    storeId?: number
+  ): Observable<Report[]> {
     let params = new HttpParams();
     if (startDate) params = params.set('startDate', startDate);
     if (endDate) params = params.set('endDate', endDate);
+    if (productId) params = params.set('productId', productId.toString());
+    if (storeId) params = params.set('storeId', storeId.toString());
     return this.http
       .get<Report[]>(`${this.apiUrl}/hourly`, { params })
       .pipe(catchError(this.handleError));
   }
 
-  getDailyReports(startDate?: string, endDate?: string): Observable<Report[]> {
+  getDailyReports(
+    startDate?: string,
+    endDate?: string,
+    productId?: number,
+    storeId?: number
+  ): Observable<Report[]> {
     let params = new HttpParams();
     if (startDate) params = params.set('startDate', startDate);
     if (endDate) params = params.set('endDate', endDate);
+    if (productId) params = params.set('productId', productId.toString());
+    if (storeId) params = params.set('storeId', storeId.toString());
     return this.http
       .get<Report[]>(`${this.apiUrl}/daily`, { params })
       .pipe(catchError(this.handleError));
   }
 
-  getMonthlyReports(startDate?: string, endDate?: string): Observable<Report[]> {
+  getMonthlyReports(
+    startDate?: string,
+    endDate?: string,
+    productId?: number,
+    storeId?: number
+  ): Observable<Report[]> {
     let params = new HttpParams();
     if (startDate) params = params.set('startDate', startDate);
     if (endDate) params = params.set('endDate', endDate);
+    if (productId) params = params.set('productId', productId.toString());
+    if (storeId) params = params.set('storeId', storeId.toString());
     return this.http
       .get<Report[]>(`${this.apiUrl}/monthly`, { params })
       .pipe(catchError(this.handleError));

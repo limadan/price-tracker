@@ -107,6 +107,73 @@ describe('ReportController', () => {
       });
     });
 
+    it('should filter hourly reports by productId only', async () => {
+      const productId = '10';
+      req = mockRequest({ productId });
+      (HourlyPriceReport.findAll as jest.Mock).mockResolvedValue(
+        mockReportData
+      );
+
+      await ReportController.getHourlyReports(req, res);
+
+      expect(HourlyPriceReport.findAll).toHaveBeenCalledWith({
+        where: { productId: parseInt(productId) },
+        include: ['product', 'store'],
+      });
+    });
+
+    it('should filter hourly reports by storeId only', async () => {
+      const storeId = '100';
+      req = mockRequest({ storeId });
+      (HourlyPriceReport.findAll as jest.Mock).mockResolvedValue(
+        mockReportData
+      );
+
+      await ReportController.getHourlyReports(req, res);
+
+      expect(HourlyPriceReport.findAll).toHaveBeenCalledWith({
+        where: { storeId: parseInt(storeId) },
+        include: ['product', 'store'],
+      });
+    });
+
+    it('should filter hourly reports by productId and storeId', async () => {
+      const productId = '10';
+      const storeId = '100';
+      req = mockRequest({ productId, storeId });
+      (HourlyPriceReport.findAll as jest.Mock).mockResolvedValue(
+        mockReportData
+      );
+
+      await ReportController.getHourlyReports(req, res);
+
+      expect(HourlyPriceReport.findAll).toHaveBeenCalledWith({
+        where: { productId: parseInt(productId), storeId: parseInt(storeId) },
+        include: ['product', 'store'],
+      });
+    });
+
+    it('should return empty array if no matching hourly reports', async () => {
+      req = mockRequest({ productId: '9999' });
+      (HourlyPriceReport.findAll as jest.Mock).mockResolvedValue([]);
+
+      await ReportController.getHourlyReports(req, res);
+
+      expect(res.json).toHaveBeenCalledWith([]);
+    });
+
+    it('should handle invalid productId gracefully', async () => {
+      req = mockRequest({ productId: 'invalid' });
+      (HourlyPriceReport.findAll as jest.Mock).mockResolvedValue([]);
+
+      await ReportController.getHourlyReports(req, res);
+
+      expect(HourlyPriceReport.findAll).toHaveBeenCalledWith({
+        where: { productId: NaN },
+        include: ['product', 'store'],
+      });
+    });
+
     it('should handle internal server errors', async () => {
       req = mockRequest();
       const error = new Error('DB Failure');

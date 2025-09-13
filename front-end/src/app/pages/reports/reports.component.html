@@ -1,28 +1,64 @@
 <div class="container">
   <h1>Reports</h1>
 
-  <div class="filters">
-    <div class="filter-group">
-      <label for="reportType">Report Type:</label>
-      <select id="reportType" [(ngModel)]="reportType" (change)="onReportTypeChange()">
-        <option value="hourly">Hourly</option>
-        <option value="daily">Daily</option>
-        <option value="monthly">Monthly</option>
-      </select>
-    </div>
+  <form [formGroup]="form">
+    <div class="filters">
+      <div class="filter-group">
+        <label for="reportType">Report Type:</label>
+        <select id="reportType" formControlName="reportType">
+          <option value="hourly">Hourly</option>
+          <option value="daily">Daily</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
 
-    <div class="filter-group">
-      <label for="startDate">Start Date:</label>
-      <input type="date" id="startDate" [(ngModel)]="startDate" (change)="onDateChange()" />
-    </div>
+      <div class="filter-group">
+        <label for="product">Product:</label>
+        <select id="product" formControlName="selectedProductId">
+          <option [ngValue]="null">All Products</option>
+          @for (product of products(); track product.id) {
+          <option [ngValue]="product.id">
+            {{ product.name }}
+          </option>
+          }
+        </select>
+      </div>
 
-    <div class="filter-group">
-      <label for="endDate">End Date:</label>
-      <input type="date" id="endDate" [(ngModel)]="endDate" (change)="onDateChange()" />
+      <div class="filter-group">
+        <label for="store">Store:</label>
+        <select id="store" formControlName="selectedStoreId">
+          <option [ngValue]="null">All Stores</option>
+          @for (store of stores(); track store.id) {
+          <option [ngValue]="store.id">{{ store.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" formControlName="startDate" />
+      </div>
+
+      <div class="filter-group">
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" formControlName="endDate" />
+      </div>
+      <div class="filter-group">
+        <button type="button" (click)="clearFilters()" class="btn btn-danger">
+          Clear All Filters
+        </button>
+      </div>
     </div>
+  </form>
+
+  @if(form.get('selectedProductId')?.value && reports().length !== 0) {
+  <div class="chart-container">
+    <h2>
+      {{`Price Trend for ${ getSelectedProductName() } ${ getSelectedStoreName() ? 'at ' + getSelectedStoreName() : '' }`}}
+    </h2>
+    <canvas baseChart [data]="chartData()" [options]="chartOptions" type="line"></canvas>
   </div>
-
-  @if(errorMessage()) {
+  } @if(errorMessage()) {
   <div class="alert alert-error">
     {{ errorMessage() }}
   </div>
@@ -39,12 +75,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let report of reports()">
+      @for (report of reports(); track report.id) {
+      <tr>
         <td>{{ report.product?.name || 'N/A' }}</td>
         <td>{{ report.store?.name || 'N/A' }}</td>
         <td>{{ report.averagePrice | currency }}</td>
         <td>{{ report.date | date : 'medium' }}</td>
       </tr>
+      }
     </tbody>
   </table>
   }

@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ProductService, Product, ProductRequest } from '../../services/product.service';
 import { ProductFormComponent } from '../../components/product-form/product-form.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-products',
@@ -64,6 +65,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
           this.errorMessage.set('');
         },
         error: (error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `Error while loading product: ${error.message ?? 'Undefined error'}`,
+          });
           this.errorMessage.set(error);
         },
       });
@@ -92,7 +98,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
           this.hideForm();
         },
         error: (error) => {
-          this.errorMessage.set(error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `Error while inserting product: ${error.message ?? 'Undefined error'}`,
+          });
         },
       });
   }
@@ -108,22 +118,41 @@ export class ProductsComponent implements OnInit, OnDestroy {
             this.hideForm();
           },
           error: (error) => {
-            this.errorMessage.set(error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: `Error while updating product: ${error.message ?? 'Undefined error'}`,
+            });
           },
         });
     }
   }
 
   deleteProduct(id: number) {
-    if (confirm('Are you sure you want to delete this product?')) {
-      this.productService.deleteProduct(id).subscribe({
-        next: () => {
-          this.loadProducts();
-        },
-        error: (error) => {
-          this.errorMessage.set(error);
-        },
-      });
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productService.deleteProduct(id).subscribe({
+          next: () => {
+            this.loadProducts();
+          },
+          error: (error) => {
+            this.errorMessage.set(error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: `Error while deleting product: ${error.message ?? 'Undefined error'}`,
+            });
+          },
+        });
+      }
+    });
   }
 }
